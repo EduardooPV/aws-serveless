@@ -46,6 +46,7 @@ aws lambda create-function \
     --zip-file fileb://worker.zip \
     --handler worker.handler \
     --role arn:aws:iam::${ACCOUNT}:role/lambda-role \
+    --environment "Variables={QUEUE_URL=$QUEUE_URL}" \
     --endpoint-url=$ENDPOINT > /dev/null
 
 # Connect SQS trigger to Worker Lambda

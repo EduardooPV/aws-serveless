@@ -32,10 +32,9 @@ Este é um **projeto evolutivo** dividido em fases incrementais. Cada fase adici
 
 **Foco:** Em corretoras, perder uma mensagem = perder dinheiro do cliente
 
-- [ ] **Dead Letter Queue (DLQ):** Se o worker falhar 3x (ex: erro de validação), mover para uma fila de "Rejeitados" para análise manual
-- [ ] **Idempotência no DynamoDB:** Usar `ConditionExpressions` para garantir que a ordem ORD-123 não seja debitada duas vezes do saldo
-- [ ] **Retry Policies:** Configurar "Exponential Backoff" na SQS (tentar de novo em 2s, depois 4s, depois 8s...)
-- [ ] **Validação de Saldo:** Criar tabela `Accounts` no DynamoDB com saldo disponível e verificar antes de processar ordem
+- [x] **Dead Letter Queue (DLQ):** Se o worker falhar 3x (ex: erro de validação), mover para uma fila de "Rejeitados" para análise manual
+- [x] **Idempotência no DynamoDB:** Usar `ConditionExpressions` para garantir que a ordem ORD-123 não seja debitada duas vezes do saldo
+- [x] **Retry Policies:** Configurar "Exponential Backoff" na SQS (tentar de novo em 2s, depois 4s, depois 8s...)
 
 ### Fase 3: Notificações & Fan-out (Padrão SNS)
 
