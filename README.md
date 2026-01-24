@@ -9,7 +9,10 @@ Este repositório documenta a **jornada de construção de um sistema financeiro
 - **Segurança bancária** (criptografia, secrets, IAM)
 - **Observabilidade** completa (logs, métricas, traces)
 
-### Por que LocalStack?
+### Diagrama
+<img width="2221" height="1181" alt="AWS_Serveless (1)" src="https://github.com/user-attachments/assets/4ba5d11d-d5f9-4306-963c-a766ac86e4aa" />
+
+### LocalStack
 
 LocalStack permite simular **todos os serviços AWS localmente**, sem custos e com iteração rápida.
 
