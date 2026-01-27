@@ -10,6 +10,7 @@ Este repositório documenta a **jornada de construção de um sistema financeiro
 - **Observabilidade** completa (logs, métricas, traces)
 
 ### Diagrama
+
 <img width="2221" height="1181" alt="AWS_Serveless (1)" src="https://github.com/user-attachments/assets/4ba5d11d-d5f9-4306-963c-a766ac86e4aa" />
 
 ### LocalStack
@@ -43,13 +44,13 @@ Este é um **projeto evolutivo** dividido em fases incrementais. Cada fase adici
 
 **Foco:** Uma ordem executada dispara várias ações simultâneas
 
-- [ ] **SNS (Simple Notification Service):** Criar um tópico `OrderEvents`
-- [ ] **Padrão Fan-out:** Quando o Worker confirmar a compra:
-  - Publicar mensagem no SNS
-  - SNS entrega para uma SQS de "Notificações" (simulada)
-  - SNS entrega para uma SQS de "Auditoria" (Compliance)
-  - SNS entrega para uma SQS de "Relatórios" (BackOffice)
-- [ ] **Lambda de Notificação:** Consumir fila e simular envio de email/SMS ao cliente
+- [x] **SNS (Simple Notification Service):** Criar um tópico `OrderEvents`
+- [x] **Padrão Fan-out:** Quando o Worker confirmar a compra:
+  - [x] Publicar mensagem no SNS
+  - [x] SNS entrega para uma SQS de "Notificações" (simulada)
+  - [x] SNS entrega para uma SQS de "Auditoria" (Compliance)
+  - [x] SNS entrega para uma SQS de "Relatórios" (BackOffice)
+- [x] **Lambda de Notificação:** Consumir fila e simular envio de email/SMS ao cliente
 
 ### Fase 4: Orquestração de Transações (Step Functions)
 

@@ -2,6 +2,7 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { SQSClient, ChangeMessageVisibilityCommand } = require("@aws-sdk/client-sqs");
+const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
 
 // Configure AWS SDK for LocalStack or local environment
 const isLocalStack = process.env.LOCALSTACK_HOSTNAME ? true : false;
@@ -16,6 +17,7 @@ const s3Client = new S3Client(config);
 const dynamoClient = new DynamoDBClient(config);
 const docClient = DynamoDBDocumentClient.from(dynamoClient);
 const sqsClient = new SQSClient(config);
+const snsClient = new SNSClient(config);
 
 exports.handler = async (event) => {
   // Process each message from SQS queue
@@ -57,6 +59,19 @@ exports.handler = async (event) => {
 
         await s3Client.send(new PutObjectCommand(s3Params));
         console.log(`[Worker Lambda] Receipt saved to S3`);
+
+        // Get the ARN the topic from environment variable
+        const topicArn = process.env.TOPIC_ARN || "arn:aws:sns:us-east-1:000000000000:OrderEvents";
+
+        const snsParams = {
+          TopicArn: topicArn,
+          Message: JSON.stringify(orderData),
+          Subject: `Order Processed: ${orderData.order_id}`
+        }
+
+        await snsClient.send(new PublishCommand(snsParams));
+        console.log(`[Worker Lambda] Event published to SNS Topic: OrderEvents`);
+
       } catch (dbError) {
         // If error is "ConditionalCheckFailed" then the order already exists
         if (dbError.name === "ConditionalCheckFailedException") {
