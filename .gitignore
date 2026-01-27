@@ -1,2 +1,15 @@
+# Js
 node_modules
+bundle.zip
+
+# Environment 
 .env
+
+# Terraform
+.terraform/
+*tfstate
+*tfstate.*
+.terraform.tfstate.lock.info
+
+# MacOS
+DS_Store

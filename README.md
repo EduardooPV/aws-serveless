@@ -110,7 +110,7 @@ Este é um **projeto evolutivo** dividido em fases incrementais. Cada fase adici
 - [ ] **API Gateway REST:** Criar endpoints `POST /orders`, `GET /orders/{id}`, `DELETE /orders/{id}`
 - [ ] **Request Validation:** Validar schema JSON antes de chegar na Lambda (barrar requisições inválidas)
 - [ ] **API Keys & Rate Limiting:** Proteger API com autenticação e throttling (100 req/min por cliente)
-- [ ] **Terraform (ou CDK):** Migrar shell scripts para IaC declarativo (padrão de mercado)
+- [x] **Terraform (ou CDK):** Migrar shell scripts para IaC declarativo (padrão de mercado)
 - [ ] **CI/CD Pipeline:** Automatizar deploy com GitHub Actions ou GitLab CI
 
 ### Fase 10: Alta Disponibilidade & Disaster Recovery
