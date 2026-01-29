@@ -47,6 +47,7 @@ resource "aws_lambda_function" "worker" {
     variables = {
       QUEUE_URL = aws_sqs_queue.order_queue.id
       TOPIC_ARN = aws_sns_topic.order_events.arn
+      STATE_MACHINE_ARN = aws_sfn_state_machine.order_processing_machine.arn
     }
   }
 }

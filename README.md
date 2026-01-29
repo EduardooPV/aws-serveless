@@ -56,13 +56,13 @@ Este é um **projeto evolutivo** dividido em fases incrementais. Cada fase adici
 
 **Foco:** Compra de ações não é só um passo, é um fluxo de estados
 
-- [ ] **AWS Step Functions:** Substituir a lógica simples do Worker por uma Máquina de Estados:
-  1. **Validar Saldo** → Se insuficiente, rejeitar
-  2. **Bloquear Saldo** → Debitar do saldo disponível
-  3. **Executar Ordem** → Chamar API simulada da B3
-  4. **Confirmar Transação** → Gravar no DynamoDB
-  5. **Rollback:** Se falhar no passo 3, devolver o dinheiro do passo 2
-- [ ] **Padrão Saga:** Implementar compensação automática em caso de falha
+- [x] **AWS Step Functions:** Substituir a lógica simples do Worker por uma Máquina de Estados:
+    1. **Validar Saldo** → Se insuficiente, rejeitar
+    2. **Bloquear Saldo** → Debitar do saldo disponível
+    3. **Executar Ordem** → Chamar API simulada da B3
+    4. **Confirmar Transação** → Gravar no DynamoDB
+    5. **Rollback:** Se falhar no passo 3, devolver o dinheiro do passo 2
+- [x] **Padrão Saga:** Implementar compensação automática em caso de falha
 
 ### Fase 5: Segurança Bancária (KMS & Secrets)
 

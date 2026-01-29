@@ -7,7 +7,7 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=lambda,sqs,dynamodb,s3,cloudwatch,sns,iam,sts
+      - SERVICES=lambda,sqs,dynamodb,s3,cloudwatch,sns,iam,sts,stepfunctions
       - DEBUG=1
       - DATA_DIR=/tmp/localstack/data
       - LAMBDA_EXECUTOR=docker
