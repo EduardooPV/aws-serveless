@@ -13,3 +13,26 @@ bundle.zip
 
 # MacOS
 DS_Store
+
+# .Net
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.user
+*.suo
+*.cache
+*.log
+*.vs/
+TestResults/
+.vscode/
+*.dbmdl
+*.dbproj.schemaview
+*.dbproj.user
+*.publish.xml
+_ReSharper*/
+*.ncrunch*
+*.localhistory/
+*.idea/
+*.sln.docstates

@@ -21,6 +21,28 @@ LocalStack permite simular **todos os serviços AWS localmente**, sem custos e c
 
 Este é um **projeto evolutivo** dividido em fases incrementais. Cada fase adiciona complexidade e simula novos desafios reais de produção. O código não é descartável - cada melhoria se soma à anterior, construindo um sistema progressivamente mais robusto.
 
+---
+
+## Projeto .NET
+
+O repositório inclui uma API em .NET para simular o backend financeiro, integrando com DynamoDB e outros serviços AWS. O foco principal segue sendo a arquitetura serverless e o uso do LocalStack.
+
+### Como rodar localmente
+
+1. Instale o [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+2. Suba o LocalStack (veja instruções na documentação do projeto)
+3. No diretório raiz, execute:
+
+```bash
+cd src/Brokerage.Api
+dotnet restore
+dotnet run
+```
+
+A API estará disponível em `http://localhost:5032`.
+
+> **Nota:** O backend .NET é apenas um dos componentes do ecossistema serverless. O objetivo é demonstrar integração realista com serviços AWS simulados.
+
 ## Roadmap
 
 ### Fase 1: Fundação Básica
@@ -57,11 +79,11 @@ Este é um **projeto evolutivo** dividido em fases incrementais. Cada fase adici
 **Foco:** Compra de ações não é só um passo, é um fluxo de estados
 
 - [x] **AWS Step Functions:** Substituir a lógica simples do Worker por uma Máquina de Estados:
-    1. **Validar Saldo** → Se insuficiente, rejeitar
-    2. **Bloquear Saldo** → Debitar do saldo disponível
-    3. **Executar Ordem** → Chamar API simulada da B3
-    4. **Confirmar Transação** → Gravar no DynamoDB
-    5. **Rollback:** Se falhar no passo 3, devolver o dinheiro do passo 2
+  1. **Validar Saldo** → Se insuficiente, rejeitar
+  2. **Bloquear Saldo** → Debitar do saldo disponível
+  3. **Executar Ordem** → Chamar API simulada da B3
+  4. **Confirmar Transação** → Gravar no DynamoDB
+  5. **Rollback:** Se falhar no passo 3, devolver o dinheiro do passo 2
 - [x] **Padrão Saga:** Implementar compensação automática em caso de falha
 
 ### Fase 5: Segurança Bancária (KMS & Secrets)
