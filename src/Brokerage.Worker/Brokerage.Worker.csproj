@@ -16,5 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Brokerage.Domain\Brokerage.Domain.csproj" />
+    <ProjectReference Include="..\Brokerage.Infrastructure\Brokerage.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

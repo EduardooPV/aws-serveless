@@ -1,15 +1,14 @@
 using Amazon.SQS;
+using Brokerage.Domain.Interfaces;
+using Brokerage.Infrastructure.DependencyInjection;
+using Brokerage.Infrastructure.Persistence.DynamoDb;
 using Brokerage.Worker;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddSingleton<IAmazonSQS>(_ =>
-{
-    return new AmazonSQSClient(new AmazonSQSConfig
-    {
-        ServiceURL = "http://localhost:4566"
-    });
-});
+builder.Services.AddInfrastructure();
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddHostedService<OrderProcessorWorker>();
 

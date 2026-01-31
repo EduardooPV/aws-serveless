@@ -1,14 +1,17 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using Brokerage.Domain.Entities;
+using Brokerage.Domain.Interfaces;
 using Brokerage.Domain.Messages;
 using System.Text.Json;
 
 namespace Brokerage.Worker;
 
-public sealed class OrderProcessorWorker(IAmazonSQS sqs, ILogger<OrderProcessorWorker> logger) : BackgroundService
+public sealed class OrderProcessorWorker(IAmazonSQS sqs, ILogger<OrderProcessorWorker> logger, IServiceScopeFactory scopeFactory) : BackgroundService
 {
     private readonly IAmazonSQS _sqs = sqs;
     private readonly ILogger<OrderProcessorWorker> _logger = logger;
+    private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
     private const string QueueUrl = "http://localhost:4566/000000000000/OrderQueue";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -24,16 +27,35 @@ public sealed class OrderProcessorWorker(IAmazonSQS sqs, ILogger<OrderProcessorW
                 WaitTimeSeconds = 10
             }, stoppingToken);
 
-            foreach (var message in response.Messages)
+            if (response.Messages is null || response.Messages.Count == 0)
             {
-                await ProcessMessageAsync(message);
-                await _sqs.DeleteMessageAsync(QueueUrl, message.ReceiptHandle);
+                continue;
             }
+
+            foreach (var message in response.Messages)
+                try
+                {
+                    await ProcessMessageAsync(message, stoppingToken);
+
+                    await _sqs.DeleteMessageAsync(QueueUrl, message.ReceiptHandle, stoppingToken);
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(
+                        exception,
+                        "Error processing message {MessageId}",
+                        message.MessageId
+                    );
+                }
         }
     }
 
-    private async Task ProcessMessageAsync(Message message)
+    private async Task ProcessMessageAsync(Message message, CancellationToken cancellationToken)
     {
+        using var scope = _scopeFactory.CreateScope();
+
+        var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
+
         var payload = JsonSerializer.Deserialize<OrderCreatedMessage>(message.Body);
 
         if (payload is null)
@@ -42,8 +64,10 @@ public sealed class OrderProcessorWorker(IAmazonSQS sqs, ILogger<OrderProcessorW
             return;
         }
 
-        _logger.LogInformation("Processing order {OrderId}", payload!.OrderId);
+        var orderId = Guid.Parse(payload.OrderId);
 
-        await Task.Delay(500);
+        _logger.LogInformation("Order {OrderId} received. Updating status to Processing", orderId);
+
+        await orderRepository.UpdateStatusAsync(orderId, OrderStatuses.Processing, cancellationToken);
     }
 }

@@ -1,20 +1,16 @@
 using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Brokerage.Domain.Entities;
 using Brokerage.Domain.Interfaces;
 
 namespace Brokerage.Infrastructure.Persistence.DynamoDb;
 
-public class OrderRepository : IOrderRepository
+public class OrderRepository(IAmazonDynamoDB dynamoDb) : IOrderRepository
 {
     private const string TableName = "Orders";
 
-    private readonly IAmazonDynamoDB _dynamoDb;
-
-    public OrderRepository(IAmazonDynamoDB dynamoDb)
-    {
-        _dynamoDb = dynamoDb;
-    }
+    private readonly IAmazonDynamoDB _dynamoDb = dynamoDb;
 
     public async Task SaveAsync(Order order, CancellationToken cancellationToken = default)
     {
@@ -61,5 +57,28 @@ public class OrderRepository : IOrderRepository
             createdAt: DateTime.Parse(response.Item["created_at"].S)
         );
 
+    }
+
+    public async Task UpdateStatusAsync(Guid orderId, string stauts, CancellationToken cancellationToken = default)
+    {
+        var request = new UpdateItemRequest
+        {
+            TableName = TableName,
+            Key = new Dictionary<string, AttributeValue>
+            {
+                ["order_id"] = new AttributeValue { S = orderId.ToString() }
+            },
+            UpdateExpression = "SET #status = :status",
+            ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                ["#status"] = "status"
+            },
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                [":status"] = new AttributeValue { S = stauts }
+            }
+        };
+
+        await _dynamoDb.UpdateItemAsync(request, cancellationToken);
     }
 }

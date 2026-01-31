@@ -42,3 +42,11 @@ public class Order
 
     public decimal TotalAmount => Quantity * Price;
 }
+
+public static class OrderStatuses
+{
+    public const string Pending = "Pending";
+    public const string Processing = "Processing";
+    public const string Executed = "Executed";
+    public const string Failed = "Failed";
+}
