@@ -1,10 +1,9 @@
 using Amazon.DynamoDBv2;
 using Amazon.Runtime;
 using Amazon.SQS;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Brokerage.Domain.Interfaces;
-using Brokerage.Infrastructure.Repositories;
+using Brokerage.Infrastructure.Persistence.DynamoDb;
 using Brokerage.Infrastructure.Messaging;
 
 namespace Brokerage.Infrastructure.DependencyInjection;
@@ -12,8 +11,7 @@ namespace Brokerage.Infrastructure.DependencyInjection;
 public static class InfrastructureExtensions
 {
     public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
         var credentials = new BasicAWSCredentials("test", "test");
 

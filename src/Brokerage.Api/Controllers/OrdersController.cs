@@ -9,7 +9,7 @@ namespace Brokerage.Api.Controllers;
 /// Controlador de Ordens
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("orders")]
 public class OrdersController(IOrderRepository orderRepository, IOrderQueue orderQueue) : ControllerBase
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
@@ -30,8 +30,9 @@ public class OrdersController(IOrderRepository orderRepository, IOrderQueue orde
             request.Price
         );
 
-        await _orderRepository.CreateAsync(order);
+        await _orderRepository.SaveAsync(order);
         await _orderQueue.PublishOrderCreatedAsync(order.Id.ToString());
+
 
         return Accepted(new { order.Id });
     }

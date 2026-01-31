@@ -4,7 +4,7 @@ namespace Brokerage.Domain.Interfaces;
 
 public interface IOrderRepository
 {
-    Task CreateAsync(Order order);
+    Task SaveAsync(Order order, CancellationToken cancellationToken = default);
 
-    Task<Order?> GetByIdAsync(Guid id);
+    Task<Order?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken = default);
 }

@@ -20,6 +20,3 @@ else
 fi
 
 echo "✅ Infra pronta"
-
-echo "🔹 Iniciando aplicação..."
-cd "$ROOT_DIR/src/Brokerage.Api" && dotnet watch run

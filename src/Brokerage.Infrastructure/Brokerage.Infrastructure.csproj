@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <Folder Include="DependencyInjection/" />
+    <Folder Include="Persistence/" />
+    <Folder Include="Persistence/DynamoDb/" />
   </ItemGroup>
 
   <PropertyGroup>
