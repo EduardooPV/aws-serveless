@@ -30,18 +30,27 @@ O repositório inclui uma API em .NET para simular o backend financeiro, integra
 ### Como rodar localmente
 
 1. Instale o [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-2. Suba o LocalStack (veja instruções na documentação do projeto)
-3. No diretório raiz, execute:
+2. Execute o script de desenvolvimento que automatiza o LocalStack, aplica o Terraform (se necessário) e inicia a API:
 
 ```bash
-cd src/Brokerage.Api
-dotnet restore
-dotnet run
+./dev/start.sh
 ```
 
-A API estará disponível em `http://localhost:5032`.
+O script realiza automaticamente:
 
-> **Nota:** O backend .NET é apenas um dos componentes do ecossistema serverless. O objetivo é demonstrar integração realista com serviços AWS simulados.
+- Sobe o LocalStack via Docker
+- Aplica os recursos do Terraform (se ainda não existirem)
+- Inicia a aplicação `Brokerage.Api` com `dotnet watch run`
+
+A API deverá ficar disponível em http://localhost:5032 (ou na porta mostrada pelo dotnet).
+
+> **Nota:** Se preferir executar manualmente, você pode subir o LocalStack, aplicar o Terraform e rodar `cd src/Brokerage.Api && dotnet run`.
+
+## Estrutura do Projeto
+
+- **dev**: scripts de desenvolvimento e helpers (ex: `dev/start.sh`)
+- **infra**: definições de infra local com `docker-compose.yml` e a pasta `terraform` com os recursos (SQS, SNS, DynamoDB, S3, etc)
+- **src**: código-fonte .NET
 
 ## Roadmap
 
