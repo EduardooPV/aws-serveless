@@ -31,7 +31,7 @@ public class OrdersController(IOrderRepository orderRepository, IOrderQueue orde
         );
 
         await _orderRepository.CreateAsync(order);
-        await _orderQueue.EnqueueAsync(order);
+        await _orderQueue.PublishOrderCreatedAsync(order.Id.ToString());
 
         return Accepted(new { order.Id });
     }

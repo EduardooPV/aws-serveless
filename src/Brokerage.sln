@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brokerage.Domain", "Brokera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brokerage.Infrastructure", "Brokerage.Infrastructure\Brokerage.Infrastructure.csproj", "{EA7636EF-1B4B-4D88-94BE-BC7BE1CB2DA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brokerage.Worker", "Brokerage.Worker\Brokerage.Worker.csproj", "{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{EA7636EF-1B4B-4D88-94BE-BC7BE1CB2DA3}.Release|x64.Build.0 = Release|Any CPU
 		{EA7636EF-1B4B-4D88-94BE-BC7BE1CB2DA3}.Release|x86.ActiveCfg = Release|Any CPU
 		{EA7636EF-1B4B-4D88-94BE-BC7BE1CB2DA3}.Release|x86.Build.0 = Release|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Debug|x64.Build.0 = Debug|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Debug|x86.Build.0 = Debug|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Release|x64.ActiveCfg = Release|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Release|x64.Build.0 = Release|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Release|x86.ActiveCfg = Release|Any CPU
+		{C91C624F-B70C-4EE7-8C49-FF1E65C1C037}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

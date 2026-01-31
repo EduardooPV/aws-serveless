@@ -1,9 +1,9 @@
 using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using Brokerage.Domain.Entities;
 using Brokerage.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Brokerage.Domain.Messages;
 
 namespace Brokerage.Infrastructure.Messaging;
 
@@ -13,23 +13,18 @@ public class OrderQueue(IAmazonSQS sqs, IConfiguration configuration) : IOrderQu
     private readonly string _queueUrl = configuration["AWS:SQS:OrderQueueUrl"]
             ?? throw new Exception("Queue URL não configurada");
 
-    public async Task EnqueueAsync(Order order)
+    public async Task PublishOrderCreatedAsync(string orderId)
     {
-        var message = JsonSerializer.Serialize(new
+        var message = new OrderCreatedMessage
         {
-            order.Id,
-            order.CustomerId,
-            order.StockSymbol,
-            order.Quantity,
-            order.Price,
-            order.Status,
-            order.CreatedAt
-        });
+            OrderId = orderId
+        };
+
 
         await _sqs.SendMessageAsync(new SendMessageRequest
         {
             QueueUrl = _queueUrl,
-            MessageBody = message
+            MessageBody = JsonSerializer.Serialize(message)
         });
     }
 }
