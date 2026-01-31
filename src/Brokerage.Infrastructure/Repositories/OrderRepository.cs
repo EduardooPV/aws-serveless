@@ -1,22 +1,15 @@
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.Model; 
+using Amazon.DynamoDBv2.Model;
 using Brokerage.Domain.Entities;
 using Brokerage.Domain.Interfaces;
 
 namespace Brokerage.Infrastructure.Repositories;
 
-public class OrderRepository : IOrderRepository
+public class OrderRepository(IAmazonDynamoDB dynamoDb) : IOrderRepository
 {
-    private readonly IAmazonDynamoDB _dynamoDb;
+    private readonly IAmazonDynamoDB _dynamoDb = dynamoDb;
 
-    public OrderRepository(IAmazonDynamoDB dynamoDb)
-    {
-        _dynamoDb = dynamoDb;
-    }
-    
+
     public async Task CreateAsync(Order order)
     {
         var request = new PutItemRequest
@@ -68,7 +61,7 @@ public class OrderRepository : IOrderRepository
         var item = response.Item;
 
         var customerId = item["customer_id"].S;
-        var stockSymbol = item["stock_symbol"].S;  
+        var stockSymbol = item["stock_symbol"].S;
         var status = item["status"].S;
         var createdAt = item["created_at"].S;
         var quantity = item["quantity"].N;
@@ -78,7 +71,7 @@ public class OrderRepository : IOrderRepository
         var quantityInt = int.Parse(quantity);
         var createdAtDate = DateTime.Parse(createdAt);
         var orderIdGuid = Guid.Parse(item["order_id"].S);
-        
+
         return new Order(orderIdGuid, customerId, stockSymbol, quantityInt, priceDecimal, status, createdAtDate);
     }
 }

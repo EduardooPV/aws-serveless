@@ -12,10 +12,10 @@ public class Order
         Quantity = quantity;
         Price = price;
         CreatedAt = DateTime.UtcNow;
-        Status = "Created";
+        Status = "Pending";
     }
 
-    public Order(Guid id, string customerId, string stockSymbol, int quantity, decimal price, string status, DateTime createdAt )
+    public Order(Guid id, string customerId, string stockSymbol, int quantity, decimal price, string status, DateTime createdAt)
     {
         Id = id;
         CustomerId = customerId;
@@ -25,19 +25,19 @@ public class Order
         CreatedAt = createdAt;
         Status = status;
     }
-    
+
     public Guid Id { get; private set; }
-    
+
     public string CustomerId { get; private set; }
-    
+
     public string StockSymbol { get; private set; }
-    
+
     public int Quantity { get; private set; }
 
     public decimal Price { get; private set; }
-    
+
     public DateTime CreatedAt { get; private set; }
-    
+
     public string Status { get; set; }
 
     public decimal TotalAmount => Quantity * Price;

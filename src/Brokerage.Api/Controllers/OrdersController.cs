@@ -5,16 +5,15 @@ using Brokerage.Api.Models;
 
 namespace Brokerage.Api.Controllers;
 
+/// <summary>
+/// Controlador de Ordens
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class OrdersController: ControllerBase
+public class OrdersController(IOrderRepository orderRepository, IOrderQueue orderQueue) : ControllerBase
 {
-    private readonly IOrderRepository _orderRepository;
-
-    public OrdersController(IOrderRepository orderRepository)
-    {
-        _orderRepository = orderRepository;
-    }
+    private readonly IOrderRepository _orderRepository = orderRepository;
+    private readonly IOrderQueue _orderQueue = orderQueue;
 
     /// <summary>
     /// Cria uma ordem
@@ -30,10 +29,11 @@ public class OrdersController: ControllerBase
             request.Quantity,
             request.Price
         );
-        
+
         await _orderRepository.CreateAsync(order);
-        
-        return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
+        await _orderQueue.EnqueueAsync(order);
+
+        return Accepted(new { order.Id });
     }
 
     /// <summary>

@@ -1,22 +1,15 @@
 using System.Reflection;
 using Amazon.DynamoDBv2;
 using Amazon.Runtime;
+using Amazon.SQS;
 using Brokerage.Domain.Interfaces;
+using Brokerage.Infrastructure.DependencyInjection;
 using Brokerage.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var dynamoDbConfig = new AmazonDynamoDBConfig
-{
-    ServiceURL = "http://localhost:4566",
-    AuthenticationRegion = "us-east-1" 
-};
+builder.Services.AddInfrastructure(builder.Configuration);
 
-var credentials = new BasicAWSCredentials("test", "test");
-var dynamoClient = new AmazonDynamoDBClient(credentials, dynamoDbConfig);
-
-builder.Services.AddSingleton<IAmazonDynamoDB>(dynamoClient);
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -36,7 +29,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
 app.Run();
