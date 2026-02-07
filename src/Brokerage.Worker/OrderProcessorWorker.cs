@@ -68,6 +68,6 @@ public sealed class OrderProcessorWorker(IAmazonSQS sqs, ILogger<OrderProcessorW
 
         _logger.LogInformation("Order {OrderId} received. Updating status to Processing", orderId);
 
-        await orderRepository.UpdateStatusAsync(orderId, OrderStatuses.Processing, cancellationToken);
+        await orderRepository.UpdateStatusAsync(orderId, OrderStatuses.Pending, OrderStatuses.Processing, cancellationToken);
     }
 }

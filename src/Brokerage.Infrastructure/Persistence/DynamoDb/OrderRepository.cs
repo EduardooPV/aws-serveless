@@ -59,7 +59,7 @@ public class OrderRepository(IAmazonDynamoDB dynamoDb) : IOrderRepository
 
     }
 
-    public async Task UpdateStatusAsync(Guid orderId, string stauts, CancellationToken cancellationToken = default)
+    public async Task UpdateStatusAsync(Guid orderId, string status, string expectedStatus, CancellationToken cancellationToken = default)
     {
         var request = new UpdateItemRequest
         {
@@ -69,16 +69,25 @@ public class OrderRepository(IAmazonDynamoDB dynamoDb) : IOrderRepository
                 ["order_id"] = new AttributeValue { S = orderId.ToString() }
             },
             UpdateExpression = "SET #status = :status",
+            ConditionExpression = "#status = :expectedStatus",
             ExpressionAttributeNames = new Dictionary<string, string>
             {
                 ["#status"] = "status"
             },
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
-                [":status"] = new AttributeValue { S = stauts }
+                [":status"] = new AttributeValue { S = status },
+                [":expectedStatus"] = new AttributeValue { S = expectedStatus }
             }
         };
 
-        await _dynamoDb.UpdateItemAsync(request, cancellationToken);
+        try
+        {
+            await _dynamoDb.UpdateItemAsync(request, cancellationToken);
+        }
+        catch (ConditionalCheckFailedException)
+        {
+            Console.WriteLine($"Ordem {orderId} já não está mais no estado {expectedStatus}. Ignorando.");
+        }
     }
 }
