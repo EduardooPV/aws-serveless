@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Brokerage.Domain.Interfaces;
 using Brokerage.Infrastructure.Persistence.DynamoDb;
 using Brokerage.Infrastructure.Messaging;
+using Amazon.SimpleNotificationService;
 
 namespace Brokerage.Infrastructure.DependencyInjection;
 
@@ -26,12 +27,20 @@ public static class InfrastructureExtensions
             AuthenticationRegion = "us-east-1",
             UseHttp = true
         };
+        var snsConfig = new AmazonSimpleNotificationServiceConfig
+        {
+            ServiceURL = "http://localhost:4566",
+            AuthenticationRegion = "us-east-1"
+        };
 
         services.AddSingleton<IAmazonDynamoDB>(
             new AmazonDynamoDBClient(credentials, dynamoConfig)
         );
         services.AddSingleton<IAmazonSQS>(
             new AmazonSQSClient(credentials, sqsConfig)
+        );
+        services.AddSingleton<IAmazonSimpleNotificationService>(
+            new AmazonSimpleNotificationServiceClient(credentials, snsConfig)
         );
 
         services.AddScoped<IOrderRepository, OrderRepository>();

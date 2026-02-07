@@ -1,3 +1,5 @@
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Brokerage.Domain.Entities;
@@ -7,12 +9,14 @@ using System.Text.Json;
 
 namespace Brokerage.Worker;
 
-public sealed class OrderProcessorWorker(IAmazonSQS sqs, ILogger<OrderProcessorWorker> logger, IServiceScopeFactory scopeFactory) : BackgroundService
+public sealed class OrderProcessorWorker(IAmazonSQS sqs, IAmazonSimpleNotificationService sns, ILogger<OrderProcessorWorker> logger, IServiceScopeFactory scopeFactory) : BackgroundService
 {
     private readonly IAmazonSQS _sqs = sqs;
+    private readonly IAmazonSimpleNotificationService _sns = sns;
     private readonly ILogger<OrderProcessorWorker> _logger = logger;
     private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
     private const string QueueUrl = "http://localhost:4566/000000000000/OrderQueue";
+    private const string SnsTopicArn = "arn:aws:sns:us-east-1:000000000000:OrderEvents";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -68,6 +72,32 @@ public sealed class OrderProcessorWorker(IAmazonSQS sqs, ILogger<OrderProcessorW
 
         _logger.LogInformation("Order {OrderId} received. Updating status to Processing", orderId);
 
-        await orderRepository.UpdateStatusAsync(orderId, OrderStatuses.Pending, OrderStatuses.Processing, cancellationToken);
+        var updated = await orderRepository.UpdateStatusAsync(orderId, OrderStatuses.Processing, OrderStatuses.Pending, cancellationToken);
+
+        if (updated)
+        {
+            var orderEvent = new
+            {
+                OrderId = orderId,
+                Status = "Processing",
+                Timestamp = DateTime.UtcNow
+            };
+
+            var messageBody = JsonSerializer.Serialize(orderEvent);
+
+            var publishRequest = new PublishRequest
+            {
+                TopicArn = SnsTopicArn,
+                Message = messageBody
+            };
+
+            await _sns.PublishAsync(publishRequest, cancellationToken);
+
+            _logger.LogInformation("Evento de ordem {OrderId} publicado no SNS", orderId);
+        }
+        else
+        {
+            _logger.LogInformation("Evento NÃO publicado pois a ordem já foi processada.");
+        }
     }
 }

@@ -59,7 +59,7 @@ public class OrderRepository(IAmazonDynamoDB dynamoDb) : IOrderRepository
 
     }
 
-    public async Task UpdateStatusAsync(Guid orderId, string status, string expectedStatus, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateStatusAsync(Guid orderId, string status, string expectedStatus, CancellationToken cancellationToken = default)
     {
         var request = new UpdateItemRequest
         {
@@ -84,10 +84,12 @@ public class OrderRepository(IAmazonDynamoDB dynamoDb) : IOrderRepository
         try
         {
             await _dynamoDb.UpdateItemAsync(request, cancellationToken);
+            return true;
         }
         catch (ConditionalCheckFailedException)
         {
             Console.WriteLine($"Ordem {orderId} já não está mais no estado {expectedStatus}. Ignorando.");
+            return false;
         }
     }
 }
