@@ -38,6 +38,23 @@ public class OrdersController(IOrderRepository orderRepository, IOrderQueue orde
     }
 
     /// <summary>
+    /// Busca todas as ordens
+    /// </summary>
+    /// <returns>Retorna todas as ordens encontradas ou 404 (Not Found) se não existirem</returns>
+    [HttpGet]
+    public async Task<IActionResult> GetAllOrders()
+    {
+        var orders = await _orderRepository.GetAllOrdersAsync();
+
+        if (orders == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(orders);
+    }
+
+    /// <summary>
     /// Busca ordem pelo ID
     /// </summary>
     /// <param name="id">Id da ordem</param>

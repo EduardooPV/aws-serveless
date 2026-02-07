@@ -1,5 +1,4 @@
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Brokerage.Domain.Entities;
 using Brokerage.Domain.Interfaces;
@@ -56,7 +55,6 @@ public class OrderRepository(IAmazonDynamoDB dynamoDb) : IOrderRepository
             status: response.Item["status"].S,
             createdAt: DateTime.Parse(response.Item["created_at"].S)
         );
-
     }
 
     public async Task<bool> UpdateStatusAsync(Guid orderId, string status, string expectedStatus, CancellationToken cancellationToken = default)
@@ -91,5 +89,28 @@ public class OrderRepository(IAmazonDynamoDB dynamoDb) : IOrderRepository
             Console.WriteLine($"Ordem {orderId} já não está mais no estado {expectedStatus}. Ignorando.");
             return false;
         }
+    }
+
+    public async Task<IEnumerable<Order>?> GetAllOrdersAsync(CancellationToken cancellationToken = default)
+    {
+        var response = await _dynamoDb.ScanAsync(new ScanRequest
+        {
+            TableName = TableName
+        }, cancellationToken);
+
+        if (response.Items is null || response.Items.Count == 0)
+        {
+            return null;
+        }
+
+        return response.Items.Select(item => new Order(
+            Guid.Parse(item["order_id"].S),
+            customerId: item["customer_id"].S,
+            stockSymbol: item["stock_symbol"].S,
+            quantity: int.Parse(item["quantity"].N),
+            price: decimal.Parse(item["price"].N),
+            status: item["status"].S,
+            createdAt: DateTime.Parse(item["created_at"].S)
+        )).ToList();
     }
 }
