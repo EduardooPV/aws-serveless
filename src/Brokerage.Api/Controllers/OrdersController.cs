@@ -1,7 +1,10 @@
+using System.Text.Json;
+using Amazon.StepFunctions;
+using Amazon.StepFunctions.Model;
+using Brokerage.Api.Models;
 using Brokerage.Domain.Entities;
 using Brokerage.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Brokerage.Api.Models;
 
 namespace Brokerage.Api.Controllers;
 
@@ -10,10 +13,11 @@ namespace Brokerage.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("orders")]
-public class OrdersController(IOrderRepository orderRepository, IOrderQueue orderQueue) : ControllerBase
+public class OrdersController(IOrderRepository orderRepository, IOrderQueue orderQueue, IAmazonStepFunctions sfn) : ControllerBase
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IOrderQueue _orderQueue = orderQueue;
+    private readonly IAmazonStepFunctions _sfn = sfn;
 
     /// <summary>
     /// Cria uma ordem
@@ -21,7 +25,7 @@ public class OrdersController(IOrderRepository orderRepository, IOrderQueue orde
     /// <param name="request">Body</param>
     /// <returns>Retorna a ordem criada com status 201 (Created)</returns>
     [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, [FromServices] IOrderOrchestrator orchestrator)
     {
         var order = new Order(
             request.CustomerId,
@@ -31,8 +35,8 @@ public class OrdersController(IOrderRepository orderRepository, IOrderQueue orde
         );
 
         await _orderRepository.SaveAsync(order);
-        await _orderQueue.PublishOrderCreatedAsync(order.Id.ToString());
 
+        await orchestrator.StartOrderProcessingSagaAsync(order);
 
         return Accepted(new { order.Id });
     }

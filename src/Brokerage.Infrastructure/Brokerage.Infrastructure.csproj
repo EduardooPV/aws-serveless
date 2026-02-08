@@ -9,10 +9,12 @@
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.21" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.2.16" />
     <PackageReference Include="AWSSDK.SQS" Version="4.0.2.14" />
+    <PackageReference Include="AWSSDK.StepFunctions" Version="4.0.2.9" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DependencyInjection/" />
+    <Folder Include="Functions/" />
     <Folder Include="Persistence/" />
     <Folder Include="Persistence/DynamoDb/" />
   </ItemGroup>

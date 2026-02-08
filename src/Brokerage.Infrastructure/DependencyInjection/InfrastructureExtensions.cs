@@ -1,11 +1,13 @@
 using Amazon.DynamoDBv2;
 using Amazon.Runtime;
-using Amazon.SQS;
-using Microsoft.Extensions.DependencyInjection;
-using Brokerage.Domain.Interfaces;
-using Brokerage.Infrastructure.Persistence.DynamoDb;
-using Brokerage.Infrastructure.Messaging;
 using Amazon.SimpleNotificationService;
+using Amazon.SQS;
+using Amazon.StepFunctions;
+using Brokerage.Domain.Interfaces;
+using Brokerage.Infrastructure.Functions;
+using Brokerage.Infrastructure.Messaging;
+using Brokerage.Infrastructure.Persistence.DynamoDb;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Brokerage.Infrastructure.DependencyInjection;
 
@@ -32,6 +34,11 @@ public static class InfrastructureExtensions
             ServiceURL = "http://localhost:4566",
             AuthenticationRegion = "us-east-1"
         };
+        var sfnConfig = new AmazonStepFunctionsConfig
+        {
+            ServiceURL = "http://localhost:4566",
+            AuthenticationRegion = "us-east-1"
+        };
 
         services.AddSingleton<IAmazonDynamoDB>(
             new AmazonDynamoDBClient(credentials, dynamoConfig)
@@ -43,8 +50,13 @@ public static class InfrastructureExtensions
             new AmazonSimpleNotificationServiceClient(credentials, snsConfig)
         );
 
+        services.AddSingleton<IAmazonStepFunctions>(
+           new AmazonStepFunctionsClient(credentials, sfnConfig)
+        );
+
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IOrderQueue, OrderQueue>();
+        services.AddScoped<IOrderOrchestrator, OrderStepFunctionsOrchestrator>();
 
         return services;
     }

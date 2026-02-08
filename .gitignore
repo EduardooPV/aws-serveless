@@ -1,8 +1,7 @@
-# Js
-node_modules
-bundle.zip
+.localstack
+*publish
 
-# Environment 
+# Environment
 .env
 
 # Terraform

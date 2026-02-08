@@ -6,11 +6,19 @@ services:
     image: localstack/localstack
     ports:
       - "4566:4566"
+      - "4510-4559:4510-4559"
     environment:
-      - SERVICES=lambda,sqs,dynamodb,s3,cloudwatch,sns,iam,sts,stepfunctions
+      - SERVICES=lambda,sqs,dynamodb,sns,stepfunctions,events,iam,sts,s3,cloudwatch
       - DEBUG=1
-      - DATA_DIR=/tmp/localstack/data
-      - LAMBDA_EXECUTOR=docker
+      - LS_LOG=trace
+      - DATA_DIR=/var/lib/localstack/data
       - DOCKER_HOST=unix:///var/run/docker.sock
+      - LOCALSTACK_UI=1
+      - LAMBDA_EXECUTOR=local
+      - LAMBDA_STAY_OPEN_MODE=1
+      - LAMBDA_REMOTE_DOCKER=false
+      - LAMBDA_DOCKER_NETWORK=bridge
+      - LAMBDA_STARTUP_TIMEOUT=120
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "./.localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
